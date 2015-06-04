@@ -130,7 +130,7 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ioquake3.$(Platform)</TargetName>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release TA|x64'">$(ProjectDir)\..\..\code\libs\win64;$(DXSDK_DIR)\Lib\x64;$(LibraryPath)</LibraryPath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug TA|Win32'">$(ProjectDir)\..\..\code\libs\win32;$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)\..\..\code\libs\win32;$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)\..\..\code\libs\win32;$(DXSDK_DIR)\Lib\x86;C:\Users\edems\Documents\GitHub\ioq3-master\SDL2-2.0.3\lib\x86;$(LibraryPath)</LibraryPath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release TA|Win32'">$(ProjectDir)\..\..\code\libs\win32;$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug TA|x64'">$(ProjectDir)\..\..\code\libs\win64;$(DXSDK_DIR)\Lib\x64;$(LibraryPath)</LibraryPath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)\..\..\code\libs\win64;$(DXSDK_DIR)\Lib\x64;$(LibraryPath)</LibraryPath>
@@ -140,6 +140,7 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug TA|Win32'">ioquake3.$(PlatformShortName)</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release TA|Win32'">ioquake3.$(PlatformShortName)</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">ioquake3.$(PlatformShortName)</TargetName>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Users\edems\Documents\GitHub\ioq3-master\SDL2-2.0.3\include;C:\Users\edems\Documents\GitHub\ioq3-master\curl-7.42.1\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release TA|Win32'">
     <Midl>
