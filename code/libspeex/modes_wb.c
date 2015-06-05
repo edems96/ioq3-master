@@ -101,81 +101,6 @@ static const SpeexSubmode wb_submode1 = {
    36
 };
 
-
-static const SpeexSubmode wb_submode2 = {
-   0,
-   0,
-   1,
-   0,
-   /*LSP quantization*/
-   lsp_quant_high,
-   lsp_unquant_high,
-   /*Pitch quantization*/
-   NULL,
-   NULL,
-   NULL,
-   /*Innovation quantization*/
-   split_cb_search_shape_sign,
-   split_cb_shape_sign_unquant,
-#ifdef DISABLE_WIDEBAND
-   NULL,
-#else
-   &split_cb_high_lbr,
-#endif
-   -1,
-   112
-};
-
-
-static const SpeexSubmode wb_submode3 = {
-   0,
-   0,
-   1,
-   0,
-   /*LSP quantization*/
-   lsp_quant_high,
-   lsp_unquant_high,
-   /*Pitch quantization*/
-   NULL,
-   NULL,
-   NULL,
-   /*Innovation quantization*/
-   split_cb_search_shape_sign,
-   split_cb_shape_sign_unquant,
-#ifdef DISABLE_WIDEBAND
-   NULL,
-#else
-   &split_cb_high,
-#endif
-   -1,
-   192
-};
-
-static const SpeexSubmode wb_submode4 = {
-   0,
-   0,
-   1,
-   1,
-   /*LSP quantization*/
-   lsp_quant_high,
-   lsp_unquant_high,
-   /*Pitch quantization*/
-   NULL,
-   NULL,
-   NULL,
-   /*Innovation quantization*/
-   split_cb_search_shape_sign,
-   split_cb_shape_sign_unquant,
-#ifdef DISABLE_WIDEBAND
-   NULL,
-#else
-   &split_cb_high,
-#endif
-   -1,
-   352
-};
-
-
 /* Split-band wideband CELP mode*/
 static const SpeexSBMode sb_wb_mode = {
    &speex_nb_mode,
@@ -189,7 +114,7 @@ static const SpeexSBMode sb_wb_mode = {
 #endif
    QCONST16(.0002,15), /*lpc_floor*/
    QCONST16(0.9f,15),
-   {NULL, &wb_submode1, &wb_submode2, &wb_submode3, &wb_submode4, NULL, NULL, NULL},
+   {NULL, &wb_submode1, &wb_submode1, &wb_submode1, &wb_submode1, NULL, NULL, NULL},
    3,
    {1, 8, 2, 3, 4, 5, 5, 6, 6, 7, 7},
    {1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 4},

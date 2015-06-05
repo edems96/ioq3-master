@@ -145,8 +145,6 @@ static const split_cb_params split_cb_sb = {
    0,
 };
 
-
-
 /* 2150 bps "vocoder-like" mode for comfort noise */
 static const SpeexSubmode nb_submode1 = {
    0,
@@ -168,154 +166,6 @@ static const SpeexSubmode nb_submode1 = {
    43
 };
 
-/* 3.95 kbps very low bit-rate mode */
-static const SpeexSubmode nb_submode8 = {
-   0,
-   1,
-   0,
-   0,
-   /*LSP quantization*/
-   lsp_quant_lbr,
-   lsp_unquant_lbr,
-   /*No pitch quantization*/
-   forced_pitch_quant,
-   forced_pitch_unquant,
-   NULL,
-   /*Innovation quantization*/
-   split_cb_search_shape_sign,
-   split_cb_shape_sign_unquant,
-   &split_cb_nb_ulbr,
-   QCONST16(.5,15),
-   79
-};
-
-/* 5.95 kbps very low bit-rate mode */
-static const SpeexSubmode nb_submode2 = {
-   0,
-   0,
-   0,
-   0,
-   /*LSP quantization*/
-   lsp_quant_lbr,
-   lsp_unquant_lbr,
-   /*No pitch quantization*/
-   pitch_search_3tap,
-   pitch_unquant_3tap,
-   &ltp_params_vlbr,
-   /*Innovation quantization*/
-   split_cb_search_shape_sign,
-   split_cb_shape_sign_unquant,
-   &split_cb_nb_vlbr,
-   QCONST16(.6,15),
-   119
-};
-
-/* 8 kbps low bit-rate mode */
-static const SpeexSubmode nb_submode3 = {
-   -1,
-   0,
-   1,
-   0,
-   /*LSP quantization*/
-   lsp_quant_lbr,
-   lsp_unquant_lbr,
-   /*Pitch quantization*/
-   pitch_search_3tap,
-   pitch_unquant_3tap,
-   &ltp_params_lbr,
-   /*Innovation quantization*/
-   split_cb_search_shape_sign,
-   split_cb_shape_sign_unquant,
-   &split_cb_nb_lbr,
-   QCONST16(.55,15),
-   160
-};
-
-/* 11 kbps medium bit-rate mode */
-static const SpeexSubmode nb_submode4 = {
-   -1,
-   0,
-   1,
-   0,
-   /*LSP quantization*/
-   lsp_quant_lbr,
-   lsp_unquant_lbr,
-   /*Pitch quantization*/
-   pitch_search_3tap,
-   pitch_unquant_3tap,
-   &ltp_params_med,
-   /*Innovation quantization*/
-   split_cb_search_shape_sign,
-   split_cb_shape_sign_unquant,
-   &split_cb_nb_med,
-   QCONST16(.45,15),
-   220
-};
-
-/* 15 kbps high bit-rate mode */
-static const SpeexSubmode nb_submode5 = {
-   -1,
-   0,
-   3,
-   0,
-   /*LSP quantization*/
-   lsp_quant_nb,
-   lsp_unquant_nb,
-   /*Pitch quantization*/
-   pitch_search_3tap,
-   pitch_unquant_3tap,
-   &ltp_params_nb,
-   /*Innovation quantization*/
-   split_cb_search_shape_sign,
-   split_cb_shape_sign_unquant,
-   &split_cb_nb,
-   QCONST16(.3,15),
-   300
-};
-
-/* 18.2 high bit-rate mode */
-static const SpeexSubmode nb_submode6 = {
-   -1,
-   0,
-   3,
-   0,
-   /*LSP quantization*/
-   lsp_quant_nb,
-   lsp_unquant_nb,
-   /*Pitch quantization*/
-   pitch_search_3tap,
-   pitch_unquant_3tap,
-   &ltp_params_nb,
-   /*Innovation quantization*/
-   split_cb_search_shape_sign,
-   split_cb_shape_sign_unquant,
-   &split_cb_sb,
-   QCONST16(.2,15),
-   364
-};
-
-/* 24.6 kbps high bit-rate mode */
-static const SpeexSubmode nb_submode7 = {
-   -1,
-   0,
-   3,
-   1,
-   /*LSP quantization*/
-   lsp_quant_nb,
-   lsp_unquant_nb,
-   /*Pitch quantization*/
-   pitch_search_3tap,
-   pitch_unquant_3tap,
-   &ltp_params_nb,
-   /*Innovation quantization*/
-   split_cb_search_shape_sign,
-   split_cb_shape_sign_unquant,
-   &split_cb_nb,
-   QCONST16(.1,15),
-   492
-};
-
-
 /* Default mode for narrowband */
 static const SpeexNBMode nb_mode = {
    160,    /*frameSize*/
@@ -329,8 +179,8 @@ static const SpeexNBMode nb_mode = {
    0.9, 0.6, /* gamma1, gamma2 */
 #endif
    QCONST16(.0002,15), /*lpc_floor*/
-   {NULL, &nb_submode1, &nb_submode2, &nb_submode3, &nb_submode4, &nb_submode5, &nb_submode6, &nb_submode7,
-   &nb_submode8, NULL, NULL, NULL, NULL, NULL, NULL, NULL},
+   {NULL, &nb_submode1, &nb_submode1, &nb_submode1, &nb_submode1, &nb_submode1, &nb_submode1, &nb_submode1,
+   &nb_submode1, NULL, NULL, NULL, NULL, NULL, NULL, NULL},
    5,
    {1, 8, 2, 3, 3, 4, 4, 5, 5, 6, 7}
 };

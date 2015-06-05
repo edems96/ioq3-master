@@ -50,7 +50,13 @@
 #endif
 
 #ifndef OVERRIDE_COMPUTE_WEIGHTED_CODEBOOK
-static void compute_weighted_codebook(const signed char *shape_cb, const spx_word16_t *r, spx_word16_t *resp, spx_word16_t *resp2, spx_word32_t *E, int shape_cb_size, int subvect_size, char *stack)
+static void compute_weighted_codebook(
+	const signed char *shape_cb, 
+	const spx_word16_t *r, 
+	spx_word16_t *resp, 
+	spx_word32_t *E, 
+	int shape_cb_size, 
+	int subvect_size)
 {
    int i, j, k;
    VARDECL(spx_word16_t *shape);
@@ -98,18 +104,17 @@ static inline void target_update(spx_word16_t *t, spx_word16_t g, spx_word16_t *
 
 
 static void split_cb_search_shape_sign_N1(
-spx_word16_t target[],			/* target vector */
-spx_coef_t ak[],			/* LPCs for this subframe */
-spx_coef_t awk1[],			/* Weighted LPCs for this subframe */
-spx_coef_t awk2[],			/* Weighted LPCs for this subframe */
-const void *par,                      /* Codebook/search parameters*/
-int   p,                        /* number of LPC coeffs */
-int   nsf,                      /* number of samples in subframe */
-spx_sig_t *exc,
-spx_word16_t *r,
-SpeexBits *bits,
-char *stack,
-int   update_target
+	spx_word16_t target[],			/* target vector */
+	spx_coef_t ak[],			/* LPCs for this subframe */
+	spx_coef_t awk1[],			/* Weighted LPCs for this subframe */
+	spx_coef_t awk2[],			/* Weighted LPCs for this subframe */
+	const void *par,                      /* Codebook/search parameters*/
+	int   p,                        /* number of LPC coeffs */
+	int   nsf,                      /* number of samples in subframe */
+	spx_sig_t *exc,
+	spx_word16_t *r,
+	SpeexBits *bits,
+	int   update_target
 )
 {
    int i,j,m,q;
@@ -150,16 +155,16 @@ int   update_target
    /* FIXME: Do we still need to copy the target? */
    SPEEX_COPY(t, target, nsf);
 
-   compute_weighted_codebook(shape_cb, r, resp, resp2, E, shape_cb_size, subvect_size, stack);
+   compute_weighted_codebook(shape_cb, r, resp, E, shape_cb_size, subvect_size);
 
    for (i=0;i<nb_subvect;i++)
    {
       spx_word16_t *x=t+subvect_size*i;
       /*Find new n-best based on previous n-best j*/
       if (have_sign)
-         vq_nbest_sign(x, resp2, subvect_size, shape_cb_size, E, 1, &best_index, &best_dist, stack);
+         vq_nbest_sign(x, resp2, subvect_size, shape_cb_size, E, 1, &best_index, &best_dist);
       else
-         vq_nbest(x, resp2, subvect_size, shape_cb_size, E, 1, &best_index, &best_dist, stack);
+         vq_nbest(x, resp2, subvect_size, shape_cb_size, E, 1, &best_index, &best_dist);
       
       speex_bits_pack(bits,best_index,params->shape_bits+have_sign);
       
@@ -231,7 +236,7 @@ int   update_target
       ALLOC(r2, nsf, spx_word16_t);
       for (j=0;j<nsf;j++)
          r2[j] = EXTRACT16(PSHR32(e[j] ,6));
-      syn_percep_zero16(r2, ak, awk1, awk2, r2, nsf,p, stack);
+      syn_percep_zero16(r2, ak, awk1, awk2, r2, nsf, p);
       for (j=0;j<nsf;j++)
          target[j]=SUB16(target[j],PSHR16(r2[j],2));
    }
@@ -240,19 +245,18 @@ int   update_target
 
 
 void split_cb_search_shape_sign(
-spx_word16_t target[],			/* target vector */
-spx_coef_t ak[],			/* LPCs for this subframe */
-spx_coef_t awk1[],			/* Weighted LPCs for this subframe */
-spx_coef_t awk2[],			/* Weighted LPCs for this subframe */
-const void *par,                      /* Codebook/search parameters*/
-int   p,                        /* number of LPC coeffs */
-int   nsf,                      /* number of samples in subframe */
-spx_sig_t *exc,
-spx_word16_t *r,
-SpeexBits *bits,
-char *stack,
-int   complexity,
-int   update_target
+	spx_word16_t target[],			/* target vector */
+	spx_coef_t ak[],			/* LPCs for this subframe */
+	spx_coef_t awk1[],			/* Weighted LPCs for this subframe */
+	spx_coef_t awk2[],			/* Weighted LPCs for this subframe */
+	const void *par,                      /* Codebook/search parameters*/
+	int   p,                        /* number of LPC coeffs */
+	int   nsf,                      /* number of samples in subframe */
+	spx_sig_t *exc,
+	spx_word16_t *r,
+	SpeexBits *bits,
+	int   complexity,
+	int   update_target
 )
 {
    int i,j,k,m,n,q;
@@ -292,9 +296,8 @@ int   update_target
    N=(2*N)/3;
    if (N<1)
       N=1;
-   if (N==1)
-   {
-      split_cb_search_shape_sign_N1(target,ak,awk1,awk2,par,p,nsf,exc,r,bits,stack,update_target);
+   if ( N == 1 ) {
+      split_cb_search_shape_sign_N1(target, ak, awk1, awk2, par, p, nsf, exc, r, bits, update_target);
       return;
    }
    ALLOC(ot2, N, spx_word16_t*);
@@ -348,7 +351,7 @@ int   update_target
       SPEEX_COPY(&ot[j][0], t, nsf);
 
    /* Pre-compute codewords response and energy */
-   compute_weighted_codebook(shape_cb, r, resp, resp2, E, shape_cb_size, subvect_size, stack);
+   compute_weighted_codebook(shape_cb, r, resp, E, shape_cb_size, subvect_size);
 
    for (j=0;j<N;j++)
       odist[j]=0;
@@ -378,9 +381,9 @@ int   update_target
 #endif
          /*Find new n-best based on previous n-best j*/
          if (have_sign)
-            vq_nbest_sign(x, resp2, subvect_size, shape_cb_size, E, N, best_index, best_dist, stack);
+            vq_nbest_sign(x, resp2, subvect_size, shape_cb_size, E, N, best_index, best_dist);
          else
-            vq_nbest(x, resp2, subvect_size, shape_cb_size, E, N, best_index, best_dist, stack);
+            vq_nbest(x, resp2, subvect_size, shape_cb_size, E, N, best_index, best_dist);
 
          /*For all new n-bests*/
          for (k=0;k<N;k++)
@@ -504,21 +507,14 @@ int   update_target
       ALLOC(r2, nsf, spx_word16_t);
       for (j=0;j<nsf;j++)
          r2[j] = EXTRACT16(PSHR32(e[j] ,6));
-      syn_percep_zero16(r2, ak, awk1, awk2, r2, nsf,p, stack);
+      syn_percep_zero16(r2, ak, awk1, awk2, r2, nsf, p);
       for (j=0;j<nsf;j++)
          target[j]=SUB16(target[j],PSHR16(r2[j],2));
    }
 }
 
 
-void split_cb_shape_sign_unquant(
-spx_sig_t *exc,
-const void *par,                      /* non-overlapping codebook */
-int   nsf,                      /* number of samples in subframe */
-SpeexBits *bits,
-char *stack,
-spx_int32_t *seed
-)
+void split_cb_shape_sign_unquant(spx_sig_t *exc, const void *par, SpeexBits *bits)
 {
    int i,j;
    VARDECL(int *ind);
@@ -571,25 +567,19 @@ spx_int32_t *seed
 }
 
 void noise_codebook_quant(
-spx_word16_t target[],			/* target vector */
-spx_coef_t ak[],			/* LPCs for this subframe */
-spx_coef_t awk1[],			/* Weighted LPCs for this subframe */
-spx_coef_t awk2[],			/* Weighted LPCs for this subframe */
-const void *par,                      /* Codebook/search parameters*/
-int   p,                        /* number of LPC coeffs */
-int   nsf,                      /* number of samples in subframe */
-spx_sig_t *exc,
-spx_word16_t *r,
-SpeexBits *bits,
-char *stack,
-int   complexity,
-int   update_target
+	spx_word16_t target[],			/* target vector */
+	spx_coef_t ak[],			/* LPCs for this subframe */
+	spx_coef_t awk1[],			/* Weighted LPCs for this subframe */
+	spx_coef_t awk2[],			/* Weighted LPCs for this subframe */
+	int   p,                        /* number of LPC coeffs */
+	int   nsf,                      /* number of samples in subframe */
+	spx_sig_t *exc
 )
 {
    int i;
    VARDECL(spx_word16_t *tmp);
    ALLOC(tmp, nsf, spx_word16_t);
-   residue_percep_zero16(target, ak, awk1, awk2, tmp, nsf, p, stack);
+   residue_percep_zero16(target, ak, awk1, awk2, tmp, nsf, p);
 
    for (i=0;i<nsf;i++)
       exc[i]+=SHL32(EXTEND32(tmp[i]),8);
@@ -597,15 +587,7 @@ int   update_target
 }
 
 
-void noise_codebook_unquant(
-spx_sig_t *exc,
-const void *par,                      /* non-overlapping codebook */
-int   nsf,                      /* number of samples in subframe */
-SpeexBits *bits,
-char *stack,
-spx_int32_t *seed
-)
-{
+void noise_codebook_unquant(spx_sig_t *exc, int nsf, spx_int32_t *seed) {
    int i;
    /* FIXME: This is bad, but I don't think the function ever gets called anyway */
    for (i=0;i<nsf;i++)
