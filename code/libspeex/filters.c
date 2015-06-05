@@ -316,7 +316,7 @@ spx_word16_t compute_rms16(const spx_word16_t *x, int len)
 
 
 #ifndef OVERRIDE_FILTER_MEM16
-void filter_mem16(const spx_word16_t *x, const spx_coef_t *num, const spx_coef_t *den, spx_word16_t *y, int N, int ord, spx_mem_t *mem, char *stack)
+void filter_mem16(const spx_word16_t *x, const spx_coef_t *num, const spx_coef_t *den, spx_word16_t *y, int N, int ord, spx_mem_t *mem)
 {
    int i,j;
    spx_word16_t xi,yi,nyi;
@@ -336,7 +336,7 @@ void filter_mem16(const spx_word16_t *x, const spx_coef_t *num, const spx_coef_t
 #endif
 
 #ifndef OVERRIDE_IIR_MEM16
-void iir_mem16(const spx_word16_t *x, const spx_coef_t *den, spx_word16_t *y, int N, int ord, spx_mem_t *mem, char *stack)
+void iir_mem16(const spx_word16_t *x, const spx_coef_t *den, spx_word16_t *y, int N, int ord, spx_mem_t *mem)
 {
    int i,j;
    spx_word16_t yi,nyi;
@@ -356,7 +356,7 @@ void iir_mem16(const spx_word16_t *x, const spx_coef_t *den, spx_word16_t *y, in
 #endif
 
 #ifndef OVERRIDE_FIR_MEM16
-void fir_mem16(const spx_word16_t *x, const spx_coef_t *num, spx_word16_t *y, int N, int ord, spx_mem_t *mem, char *stack)
+void fir_mem16(const spx_word16_t *x, const spx_coef_t *num, spx_word16_t *y, int N, int ord, spx_mem_t *mem)
 {
    int i,j;
    spx_word16_t xi,yi;
@@ -376,34 +376,33 @@ void fir_mem16(const spx_word16_t *x, const spx_coef_t *num, spx_word16_t *y, in
 #endif
 
 
-void syn_percep_zero16(const spx_word16_t *xx, const spx_coef_t *ak, const spx_coef_t *awk1, const spx_coef_t *awk2, spx_word16_t *y, int N, int ord, char *stack)
-{
+void syn_percep_zero16(const spx_word16_t *xx, const spx_coef_t *ak, const spx_coef_t *awk1, const spx_coef_t *awk2, spx_word16_t *y, int N, int ord) {
    int i;
    VARDECL(spx_mem_t *mem);
    ALLOC(mem, ord, spx_mem_t);
    for (i=0;i<ord;i++)
       mem[i]=0;
-   iir_mem16(xx, ak, y, N, ord, mem, stack);
+   iir_mem16(xx, ak, y, N, ord, mem);
    for (i=0;i<ord;i++)
       mem[i]=0;
-   filter_mem16(y, awk1, awk2, y, N, ord, mem, stack);
+   filter_mem16(y, awk1, awk2, y, N, ord, mem);
 }
-void residue_percep_zero16(const spx_word16_t *xx, const spx_coef_t *ak, const spx_coef_t *awk1, const spx_coef_t *awk2, spx_word16_t *y, int N, int ord, char *stack)
-{
+
+void residue_percep_zero16(const spx_word16_t *xx, const spx_coef_t *ak, const spx_coef_t *awk1, const spx_coef_t *awk2, spx_word16_t *y, int N, int ord) {
    int i;
    VARDECL(spx_mem_t *mem);
    ALLOC(mem, ord, spx_mem_t);
    for (i=0;i<ord;i++)
       mem[i]=0;
-   filter_mem16(xx, ak, awk1, y, N, ord, mem, stack);
+   filter_mem16(xx, ak, awk1, y, N, ord, mem);
    for (i=0;i<ord;i++)
       mem[i]=0;
-   fir_mem16(y, awk2, y, N, ord, mem, stack);
+   fir_mem16(y, awk2, y, N, ord, mem);
 }
 
 
 #ifndef OVERRIDE_COMPUTE_IMPULSE_RESPONSE
-void compute_impulse_response(const spx_coef_t *ak, const spx_coef_t *awk1, const spx_coef_t *awk2, spx_word16_t *y, int N, int ord, char *stack)
+void compute_impulse_response(const spx_coef_t *ak, const spx_coef_t *awk1, const spx_coef_t *awk2, spx_word16_t *y, int N, int ord)
 {
    int i,j;
    spx_word16_t y1, ny1i, ny2i;
@@ -438,7 +437,7 @@ void compute_impulse_response(const spx_coef_t *ak, const spx_coef_t *awk1, cons
 #endif
 
 /* Decomposes a signal into low-band and high-band using a QMF */
-void qmf_decomp(const spx_word16_t *xx, const spx_word16_t *aa, spx_word16_t *y1, spx_word16_t *y2, int N, int M, spx_word16_t *mem, char *stack)
+void qmf_decomp(const spx_word16_t *xx, const spx_word16_t *aa, spx_word16_t *y1, spx_word16_t *y2, int N, int M, spx_word16_t *mem)
 {
    int i,j,k,M2;
    VARDECL(spx_word16_t *a);
@@ -474,7 +473,7 @@ void qmf_decomp(const spx_word16_t *xx, const spx_word16_t *aa, spx_word16_t *y1
 }
 
 /* Re-synthesised a signal from the QMF low-band and high-band signals */
-void qmf_synth(const spx_word16_t *x1, const spx_word16_t *x2, const spx_word16_t *a, spx_word16_t *y, int N, int M, spx_word16_t *mem1, spx_word16_t *mem2, char *stack)
+void qmf_synth(const spx_word16_t *x1, const spx_word16_t *x2, const spx_word16_t *a, spx_word16_t *y, int N, int M, spx_word16_t *mem1, spx_word16_t *mem2)
    /* assumptions:
       all odd x[i] are zero -- well, actually they are left out of the array now
       N and M are multiples of 4 */
@@ -651,15 +650,12 @@ int len
 }
 
 void multicomb(
-spx_word16_t *exc,          /*decoded excitation*/
-spx_word16_t *new_exc,      /*enhanced excitation*/
-spx_coef_t *ak,           /*LPC filter coefs*/
-int p,               /*LPC order*/
-int nsf,             /*sub-frame size*/
-int pitch,           /*pitch period*/
-int max_pitch,
-spx_word16_t  comb_gain,    /*gain of comb filter*/
-char *stack
+	spx_word16_t *exc,          /*decoded excitation*/
+	spx_word16_t *new_exc,      /*enhanced excitation*/
+	int nsf,             /*sub-frame size*/
+	int pitch,           /*pitch period*/
+	int max_pitch,
+	spx_word16_t  comb_gain    /*gain of comb filter*/
 )
 {
    int i; 

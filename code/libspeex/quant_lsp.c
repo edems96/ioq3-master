@@ -239,8 +239,7 @@ void lsp_unquant_nb(spx_lsp_t *lsp, int order, SpeexBits *bits)
 }
 
 
-void lsp_quant_lbr(spx_lsp_t *lsp, spx_lsp_t *qlsp, int order, SpeexBits *bits)
-{
+void lsp_quant_lbr(spx_lsp_t *lsp, spx_lsp_t *qlsp, int order, SpeexBits *bits) {
    int i;
    int id;
    spx_word16_t quant_weight[10];

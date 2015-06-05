@@ -87,15 +87,15 @@ struct kiss_fft_state{
 
 #   define S_MUL(a,b) ( (a)*(b) )
 #define C_MUL(m,a,b) \
-    do{ (m).r = (a).r*(b).r - (a).i*(b).i;\
-        (m).i = (a).r*(b).i + (a).i*(b).r; }while(0)
+	(m).r = (a).r*(b).r - (a).i*(b).i;\
+    (m).i = (a).r*(b).i + (a).i*(b).r; 
 
 #define C_MUL4(m,a,b) C_MUL(m,a,b)
 
 #   define C_FIXDIV(c,div) /* NOOP */
 #   define C_MULBYSCALAR( c, s ) \
-    do{ (c).r *= (s);\
-        (c).i *= (s); }while(0)
+	(c).r *= (s);\
+	(c).i *= (s);
 #endif
 
 #ifndef CHECK_OVERFLOW_OP
@@ -103,30 +103,22 @@ struct kiss_fft_state{
 #endif
 
 #define  C_ADD( res, a,b)\
-    do { \
 	    CHECK_OVERFLOW_OP((a).r,+,(b).r)\
 	    CHECK_OVERFLOW_OP((a).i,+,(b).i)\
-	    (res).r=(a).r+(b).r;  (res).i=(a).i+(b).i; \
-    }while(0)
+	    (res).r=(a).r+(b).r;  (res).i=(a).i+(b).i; 
 #define  C_SUB( res, a,b)\
-    do { \
 	    CHECK_OVERFLOW_OP((a).r,-,(b).r)\
 	    CHECK_OVERFLOW_OP((a).i,-,(b).i)\
-	    (res).r=(a).r-(b).r;  (res).i=(a).i-(b).i; \
-    }while(0)
+	    (res).r=(a).r-(b).r;  (res).i=(a).i-(b).i;
 #define C_ADDTO( res , a)\
-    do { \
 	    CHECK_OVERFLOW_OP((res).r,+,(a).r)\
 	    CHECK_OVERFLOW_OP((res).i,+,(a).i)\
-	    (res).r += (a).r;  (res).i += (a).i;\
-    }while(0)
+	    (res).r += (a).r;  (res).i += (a).i;
 
 #define C_SUBFROM( res , a)\
-    do {\
 	    CHECK_OVERFLOW_OP((res).r,-,(a).r)\
 	    CHECK_OVERFLOW_OP((res).i,-,(a).i)\
-	    (res).r -= (a).r;  (res).i -= (a).i; \
-    }while(0)
+	    (res).r -= (a).r;  (res).i -= (a).i;
 
 
 #ifdef FIXED_POINT
@@ -144,15 +136,12 @@ struct kiss_fft_state{
 #endif
 
 #define  kf_cexp(x,phase) \
-	do{ \
-		(x)->r = KISS_FFT_COS(phase);\
-		(x)->i = KISS_FFT_SIN(phase);\
-	}while(0)
+	(x)->r = KISS_FFT_COS(phase);\
+	(x)->i = KISS_FFT_SIN(phase);
+
 #define  kf_cexp2(x,phase) \
-               do{ \
-               (x)->r = spx_cos_norm((phase));\
-               (x)->i = spx_cos_norm((phase)-32768);\
-}while(0)
+	(x)->r = spx_cos_norm((phase));\
+	(x)->i = spx_cos_norm((phase)-32768);
 
 
 /* a debugging function */

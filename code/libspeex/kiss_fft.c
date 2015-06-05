@@ -351,8 +351,7 @@ void kf_shuffle(
    }
 }
 
-static
-void kf_work(
+static void kf_work(
         kiss_fft_cpx * Fout,
         const kiss_fft_cpx * f,
         const size_t fstride,
@@ -360,9 +359,8 @@ void kf_work(
         int * factors,
         const kiss_fft_cfg st,
         int N,
-        int s2,
         int m2
-        )
+)
 {
    int i;
     kiss_fft_cpx * Fout_beg=Fout;
@@ -413,7 +411,7 @@ void kf_work(
           }
        }*/
     }else{
-       kf_work( Fout , f, fstride*p, in_stride, factors,st, N*p, fstride*in_stride, m);
+       kf_work( Fout , f, fstride*p, in_stride, factors, st, N*p, m);
     }
 
     
@@ -504,15 +502,11 @@ kiss_fft_cfg kiss_fft_alloc(int nfft,int inverse_fft,void * mem,size_t * lenmem 
     
 void kiss_fft_stride(kiss_fft_cfg st,const kiss_fft_cpx *fin,kiss_fft_cpx *fout,int in_stride)
 {
-    if (fin == fout) 
-    {
+    if (fin == fout) {
        speex_fatal("In-place FFT not supported");
-       /*CHECKBUF(tmpbuf,ntmpbuf,st->nfft);
-       kf_work(tmpbuf,fin,1,in_stride, st->factors,st);
-       SPEEX_MOVE(fout,tmpbuf,st->nfft);*/
     } else {
        kf_shuffle( fout, fin, 1,in_stride, st->factors,st);
-       kf_work( fout, fin, 1,in_stride, st->factors,st, 1, in_stride, 1);
+       kf_work( fout, fin, 1,in_stride, st->factors, st, 1, 1);
     }
 }
 

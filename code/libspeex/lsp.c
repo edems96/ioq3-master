@@ -174,7 +174,7 @@ static inline spx_word32_t cheb_poly_eva(
 
 #else
 
-static float cheb_poly_eva(spx_word32_t *coef, spx_word16_t x, int m, char *stack)
+static float cheb_poly_eva(spx_word32_t *coef, spx_word16_t x, int m)
 {
    int k;
    float b0, b1, tmp;
@@ -216,14 +216,12 @@ static float cheb_poly_eva(spx_word32_t *coef, spx_word16_t x, int m, char *stac
 #endif
 
 
-int lpc_to_lsp (spx_coef_t *a,int lpcrdr,spx_lsp_t *freq,int nb,spx_word16_t delta, char *stack)
+int lpc_to_lsp(spx_coef_t *a, int lpcrdr, spx_lsp_t *freq, int nb, spx_word16_t delta)
 /*  float *a 		     	lpc coefficients			*/
 /*  int lpcrdr			order of LPC coefficients (10) 		*/
 /*  float *freq 	      	LSP frequencies in the x domain       	*/
 /*  int nb			number of sub-intervals (4) 		*/
 /*  float delta			grid spacing interval (0.02) 		*/
-
-
 {
     spx_word16_t temp_xr,xl,xr,xm=0;
     spx_word32_t psuml,psumr,psumm,temp_psumr/*,temp_qsumr*/;
@@ -322,7 +320,7 @@ int lpc_to_lsp (spx_coef_t *a,int lpcrdr,spx_lsp_t *freq,int nb,spx_word16_t del
 	else
 	    pt = P16;
 
-	psuml = cheb_poly_eva(pt,xl,m,stack);	/* evals poly. at xl 	*/
+	psuml = cheb_poly_eva(pt, xl, m);	/* evals poly. at xl 	*/
 	flag = 1;
 	while(flag && (xr >= -FREQ_SCALE)){
            spx_word16_t dd;
@@ -337,7 +335,7 @@ int lpc_to_lsp (spx_coef_t *a,int lpcrdr,spx_lsp_t *freq,int nb,spx_word16_t del
               dd *= .5;
 #endif
            xr = SUB16(xl, dd);                        	/* interval spacing 	*/
-	    psumr = cheb_poly_eva(pt,xr,m,stack);/* poly(xl-delta_x) 	*/
+	    psumr = cheb_poly_eva(pt, xr, m);/* poly(xl-delta_x) 	*/
 	    temp_psumr = psumr;
 	    temp_xr = xr;
 
@@ -361,7 +359,7 @@ int lpc_to_lsp (spx_coef_t *a,int lpcrdr,spx_lsp_t *freq,int nb,spx_word16_t del
 #else
                     xm = .5*(xl+xr);        	/* bisect the interval 	*/
 #endif
-		    psumm=cheb_poly_eva(pt,xm,m,stack);
+		    psumm=cheb_poly_eva(pt, xm, m);
 		    /*if(psumm*psuml>0.)*/
 		    if(!SIGN_CHANGE(psumm,psuml))
                     {
@@ -519,7 +517,7 @@ void lsp_to_lpc(spx_lsp_t *freq,spx_coef_t *ak,int lpcrdr, char *stack)
 
 #else
 
-void lsp_to_lpc(spx_lsp_t *freq,spx_coef_t *ak,int lpcrdr, char *stack)
+void lsp_to_lpc(spx_lsp_t *freq, spx_coef_t *ak, int lpcrdr)
 /*  float *freq 	array of LSP frequencies in the x domain	*/
 /*  float *ak 		array of LPC coefficients 			*/
 /*  int lpcrdr  	order of LPC coefficients 			*/

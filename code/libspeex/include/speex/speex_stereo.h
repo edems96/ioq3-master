@@ -81,7 +81,7 @@ void speex_decode_stereo(float *data, int frame_size, SpeexStereoState *stereo);
 void speex_decode_stereo_int(spx_int16_t *data, int frame_size, SpeexStereoState *stereo);
 
 /** Callback handler for intensity stereo info */
-int speex_std_stereo_request_handler(SpeexBits *bits, void *state, void *data);
+int speex_std_stereo_request_handler(SpeexBits *bits, void *data);
 
 #ifdef __cplusplus
 }

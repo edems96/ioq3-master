@@ -462,7 +462,8 @@ void *Sys_LoadDll(const char *name, qboolean useSystemLib)
 	if(useSystemLib)
 		Com_Printf("Trying to load \"%s\"...\n", name);
 	
-	if(!useSystemLib || !(dllhandle = Sys_LoadLibrary(name)))
+	dllhandle = Sys_LoadLibrary(name);
+	if(!useSystemLib || !dllhandle)
 	{
 		const char *topDir;
 		char libPath[MAX_OSPATH];
@@ -475,7 +476,8 @@ void *Sys_LoadDll(const char *name, qboolean useSystemLib)
 		Com_Printf("Trying to load \"%s\" from \"%s\"...\n", name, topDir);
 		Com_sprintf(libPath, sizeof(libPath), "%s%c%s", topDir, PATH_SEP, name);
 
-		if(!(dllhandle = Sys_LoadLibrary(libPath)))
+		dllhandle = Sys_LoadLibrary(libPath);
+		if( !dllhandle )
 		{
 			const char *basePath = Cvar_VariableString("fs_basepath");
 			

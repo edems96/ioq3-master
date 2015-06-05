@@ -53,8 +53,8 @@ Modified by Jean-Marc Valin
 
 #include "arch.h"
 
-int lpc_to_lsp (spx_coef_t *a, int lpcrdr, spx_lsp_t *freq, int nb, spx_word16_t delta, char *stack);
-void lsp_to_lpc(spx_lsp_t *freq, spx_coef_t *ak, int lpcrdr, char *stack);
+int lpc_to_lsp (spx_coef_t *a, int lpcrdr, spx_lsp_t *freq, int nb, spx_word16_t delta);
+void lsp_to_lpc(spx_lsp_t *freq, spx_coef_t *ak, int lpcrdr);
 
 /*Added by JMV*/
 void lsp_enforce_margin(spx_lsp_t *lsp, int len, spx_word16_t margin);

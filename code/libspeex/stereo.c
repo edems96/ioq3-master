@@ -114,7 +114,7 @@ void speex_encode_stereo(float *data, int frame_size, SpeexBits *bits)
    {
       e_left  += ((float)data[2*i])*data[2*i];
       e_right += ((float)data[2*i+1])*data[2*i+1];
-      data[i] =  .5*(((float)data[2*i])+data[2*i+1]);
+      data[i] =  0.5f *(((float)data[2*i])+data[2*i+1]);
       e_tot   += ((float)data[i])*data[i];
    }
    balance=(e_left+1)/(e_right+1);
@@ -271,8 +271,7 @@ void speex_decode_stereo_int(spx_int16_t *data, int frame_size, SpeexStereoState
    }
 }
 
-int speex_std_stereo_request_handler(SpeexBits *bits, void *state, void *data)
-{
+int speex_std_stereo_request_handler(SpeexBits *bits, void *data) {
    RealSpeexStereoState *stereo;
    spx_word16_t sign=1, dexp;
    int tmp;

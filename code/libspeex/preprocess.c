@@ -442,7 +442,7 @@ SpeexPreprocessState *speex_preprocess_state_init(int frame_size, int sampling_r
    
    st->nbands = NB_BANDS;
    M = st->nbands;
-   st->bank = filterbank_new(M, sampling_rate, N, 1);
+   st->bank = filterbank_new(M, sampling_rate, N);
    
    st->frame = (spx_word16_t*)speex_alloc(2*N*sizeof(spx_word16_t));
    st->window = (spx_word16_t*)speex_alloc(2*N*sizeof(spx_word16_t));
@@ -719,8 +719,7 @@ static void update_noise_prob(SpeexPreprocessState *st)
 
 void speex_echo_get_residual(SpeexEchoState *st, spx_word32_t *Yout, int len);
 
-int speex_preprocess(SpeexPreprocessState *st, spx_int16_t *x, spx_int32_t *echo)
-{
+int speex_preprocess(SpeexPreprocessState *st, spx_int16_t *x) {
    return speex_preprocess_run(st, x);
 }
 

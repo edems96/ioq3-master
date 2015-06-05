@@ -84,7 +84,7 @@ void speex_echo_state_destroy(SpeexEchoState *st);
 void speex_echo_cancellation(SpeexEchoState *st, const spx_int16_t *rec, const spx_int16_t *play, spx_int16_t *out);
 
 /** Performs echo cancellation a frame (deprecated) */
-void speex_echo_cancel(SpeexEchoState *st, const spx_int16_t *rec, const spx_int16_t *play, spx_int16_t *out, spx_int32_t *Yout);
+void speex_echo_cancel(SpeexEchoState *st, const spx_int16_t *rec, const spx_int16_t *play, spx_int16_t *out);
 
 /** Perform echo cancellation using internal playback buffer, which is delayed by two frames
  * to account for the delay introduced by most soundcards (but it could be off!)

@@ -850,6 +850,14 @@ void Cmd_CompleteCfgName( char *args, int argNum ) {
 	}
 }
 
+void Cmd_Adam(void) {
+	Com_Printf("Hi adam!\nWelcome here!");
+}
+
+void Cmd_Ady(void) {
+	Com_Printf("Ady loaded\n");
+}
+
 /*
 ============
 Cmd_Init
@@ -865,5 +873,7 @@ void Cmd_Init (void) {
 	Cmd_SetCommandCompletionFunc( "vstr", Cvar_CompleteCvarName );
 	Cmd_AddCommand ("echo",Cmd_Echo_f);
 	Cmd_AddCommand ("wait", Cmd_Wait_f);
+	Cmd_AddCommand("adam", Cmd_Adam);
+	Cmd_AddCommand("ady", Cmd_Ady);
 }
 

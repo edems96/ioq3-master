@@ -49,55 +49,42 @@ typedef struct split_cb_params {
 
 
 void split_cb_search_shape_sign(
-spx_word16_t target[],             /* target vector */
-spx_coef_t ak[],                /* LPCs for this subframe */
-spx_coef_t awk1[],              /* Weighted LPCs for this subframe */
-spx_coef_t awk2[],              /* Weighted LPCs for this subframe */
-const void *par,                /* Codebook/search parameters */
-int   p,                        /* number of LPC coeffs */
-int   nsf,                      /* number of samples in subframe */
-spx_sig_t *exc,
-spx_word16_t *r,
-SpeexBits *bits,
-char *stack,
-int   complexity,
-int   update_target
+	spx_word16_t target[],             /* target vector */
+	spx_coef_t ak[],                /* LPCs for this subframe */
+	spx_coef_t awk1[],              /* Weighted LPCs for this subframe */
+	spx_coef_t awk2[],              /* Weighted LPCs for this subframe */
+	const void *par,                /* Codebook/search parameters */
+	int   p,                        /* number of LPC coeffs */
+	int   nsf,                      /* number of samples in subframe */
+	spx_sig_t *exc,
+	spx_word16_t *r,
+	SpeexBits *bits,
+	int   complexity,
+	int   update_target
 );
 
 void split_cb_shape_sign_unquant(
-spx_sig_t *exc,
-const void *par,                /* non-overlapping codebook */
-int   nsf,                      /* number of samples in subframe */
-SpeexBits *bits,
-char *stack,
-spx_int32_t *seed
+	spx_sig_t *exc,
+	const void *par,                /* non-overlapping codebook */
+	SpeexBits *bits
 );
 
 
 void noise_codebook_quant(
-spx_word16_t target[],             /* target vector */
-spx_coef_t ak[],                /* LPCs for this subframe */
-spx_coef_t awk1[],              /* Weighted LPCs for this subframe */
-spx_coef_t awk2[],              /* Weighted LPCs for this subframe */
-const void *par,                /* Codebook/search parameters */
-int   p,                        /* number of LPC coeffs */
-int   nsf,                      /* number of samples in subframe */
-spx_sig_t *exc,
-spx_word16_t *r,
-SpeexBits *bits,
-char *stack,
-int   complexity,
-int   update_target
+	spx_word16_t target[],             /* target vector */
+	spx_coef_t ak[],                /* LPCs for this subframe */
+	spx_coef_t awk1[],              /* Weighted LPCs for this subframe */
+	spx_coef_t awk2[],              /* Weighted LPCs for this subframe */
+	int   p,                        /* number of LPC coeffs */
+	int   nsf,                      /* number of samples in subframe */
+	spx_sig_t *exc
 );
 
 
 void noise_codebook_unquant(
-spx_sig_t *exc,
-const void *par,                /* non-overlapping codebook */
-int   nsf,                      /* number of samples in subframe */
-SpeexBits *bits,
-char *stack,
-spx_int32_t *seed
+	spx_sig_t *exc,
+	int   nsf,                      /* number of samples in subframe */
+	spx_int32_t *seed
 );
 
 #endif

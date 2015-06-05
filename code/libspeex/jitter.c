@@ -367,7 +367,7 @@ static void shift_timings(JitterBuffer *jitter, spx_int16_t amount)
 /** Put one packet into the jitter buffer */
 void jitter_buffer_put(JitterBuffer *jitter, const JitterBufferPacket *packet)
 {
-   int i,j;
+   unsigned int i,j;
    int late;
    /*fprintf (stderr, "put packet %d %d\n", timestamp, span);*/
    
@@ -676,7 +676,7 @@ int jitter_buffer_get(JitterBuffer *jitter, JitterBufferPacket *packet, spx_int3
 
 int jitter_buffer_get_another(JitterBuffer *jitter, JitterBufferPacket *packet)
 {
-   int i, j;
+   unsigned int i, j;
    for (i=0;i<SPEEX_JITTER_MAX_BUFFER_SIZE;i++)
    {
       if (jitter->packets[i].data && jitter->packets[i].timestamp==jitter->last_returned_timestamp)
@@ -710,7 +710,7 @@ int jitter_buffer_get_another(JitterBuffer *jitter, JitterBufferPacket *packet)
 }
 
 /* Let the jitter buffer know it's the right time to adjust the buffering delay to the network conditions */
-static int _jitter_buffer_update_delay(JitterBuffer *jitter, JitterBufferPacket *packet, spx_int32_t *start_offset)
+static int _jitter_buffer_update_delay(JitterBuffer *jitter)
 {
    spx_int16_t opt = compute_opt_delay(jitter);
    /*fprintf(stderr, "opt adjustment is %d ", opt);*/
@@ -733,13 +733,9 @@ static int _jitter_buffer_update_delay(JitterBuffer *jitter, JitterBufferPacket 
 }
 
 /* Let the jitter buffer know it's the right time to adjust the buffering delay to the network conditions */
-int jitter_buffer_update_delay(JitterBuffer *jitter, JitterBufferPacket *packet, spx_int32_t *start_offset)
-{
-   /* If the programmer calls jitter_buffer_update_delay() directly, 
-      automatically disable auto-adjustment */
+int jitter_buffer_update_delay(JitterBuffer *jitter) {
    jitter->auto_adjust = 0;
-
-   return _jitter_buffer_update_delay(jitter, packet, start_offset);
+   return _jitter_buffer_update_delay(jitter);
 }
 
 /** Get pointer timestamp of jitter buffer */
@@ -752,7 +748,7 @@ void jitter_buffer_tick(JitterBuffer *jitter)
 {
    /* Automatically-adjust the buffering delay if requested */
    if (jitter->auto_adjust)
-      _jitter_buffer_update_delay(jitter, NULL, NULL);
+      _jitter_buffer_update_delay(jitter);
    
    if (jitter->buffered >= 0)
    {
@@ -768,7 +764,7 @@ void jitter_buffer_remaining_span(JitterBuffer *jitter, spx_uint32_t rem)
 {
    /* Automatically-adjust the buffering delay if requested */
    if (jitter->auto_adjust)
-      _jitter_buffer_update_delay(jitter, NULL, NULL);
+      _jitter_buffer_update_delay(jitter);
    
    if (jitter->buffered < 0)
       speex_warning_int("jitter buffer sees negative buffering, your code might be broken. Value is ", jitter->buffered);

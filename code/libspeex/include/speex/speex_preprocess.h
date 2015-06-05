@@ -77,7 +77,7 @@ void speex_preprocess_state_destroy(SpeexPreprocessState *st);
 int speex_preprocess_run(SpeexPreprocessState *st, spx_int16_t *x);
 
 /** Preprocess a frame (deprecated, use speex_preprocess_run() instead)*/
-int speex_preprocess(SpeexPreprocessState *st, spx_int16_t *x, spx_int32_t *echo);
+int speex_preprocess(SpeexPreprocessState *st, spx_int16_t *x);
 
 /** Update preprocessor state, but do not compute the output
  * @param st Preprocessor state

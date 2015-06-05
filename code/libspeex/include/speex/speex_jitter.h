@@ -186,7 +186,7 @@ void jitter_buffer_remaining_span(JitterBuffer *jitter, spx_uint32_t rem);
 */
 int jitter_buffer_ctl(JitterBuffer *jitter, int request, void *ptr);
 
-int jitter_buffer_update_delay(JitterBuffer *jitter, JitterBufferPacket *packet, spx_int32_t *start_offset);
+int jitter_buffer_update_delay(JitterBuffer *jitter);
 
 /* @} */
 

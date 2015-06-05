@@ -49,7 +49,7 @@ typedef struct {
 } FilterBank;
 
 
-FilterBank *filterbank_new(int banks, spx_word32_t sampling, int len, int type);
+FilterBank *filterbank_new(int banks, spx_word32_t sampling, int len);
 
 void filterbank_destroy(FilterBank *bank);
 

@@ -319,7 +319,7 @@ int nb_encode(void *state, void *vin, SpeexBits *bits)
       /* Levinson-Durbin */
       _spx_lpc(lpc, autocorr, st->lpcSize);
       /* LPC to LSPs (x-domain) transform */
-      roots=lpc_to_lsp (lpc, st->lpcSize, lsp, 10, LSP_DELTA1, stack);
+      roots=lpc_to_lsp (lpc, st->lpcSize, lsp, 10, LSP_DELTA1);
       /* Check if we found all the roots */
       if (roots!=st->lpcSize)
       {
@@ -346,7 +346,7 @@ int nb_encode(void *state, void *vin, SpeexBits *bits)
       lsp_enforce_margin(interp_lsp, st->lpcSize, LSP_MARGIN);
 
       /* Compute interpolated LPCs (unquantized) for whole frame*/
-      lsp_to_lpc(interp_lsp, interp_lpc, st->lpcSize,stack);
+      lsp_to_lpc(interp_lsp, interp_lpc, st->lpcSize);
 
 
       /*Open-loop pitch*/
@@ -364,11 +364,10 @@ int nb_encode(void *state, void *vin, SpeexBits *bits)
 
          SPEEX_COPY(st->sw, st->winBuf, diff);
          SPEEX_COPY(st->sw+diff, in, st->frameSize-diff);
-         filter_mem16(st->sw, bw_lpc1, bw_lpc2, st->sw, st->frameSize, st->lpcSize, st->mem_sw_whole, stack);
+         filter_mem16(st->sw, bw_lpc1, bw_lpc2, st->sw, st->frameSize, st->lpcSize, st->mem_sw_whole);
 
-         open_loop_nbest_pitch(st->sw, st->min_pitch, st->max_pitch, st->frameSize, 
-                               nol_pitch, nol_pitch_coef, 6, stack);
-         ol_pitch=nol_pitch[0];
+         open_loop_nbest_pitch(st->sw, st->min_pitch, st->max_pitch, st->frameSize, nol_pitch, nol_pitch_coef, 6);
+         ol_pitch = nol_pitch[0];
          ol_pitch_coef = nol_pitch_coef[0];
          /*Try to remove pitch multiples*/
          for (i=1;i<6;i++)
@@ -397,7 +396,7 @@ int nb_encode(void *state, void *vin, SpeexBits *bits)
       /*Compute "real" excitation*/
       SPEEX_COPY(st->exc, st->winBuf, diff);
       SPEEX_COPY(st->exc+diff, in, st->frameSize-diff);
-      fir_mem16(st->exc, interp_lpc, st->exc, st->frameSize, st->lpcSize, st->mem_exc, stack);
+      fir_mem16(st->exc, interp_lpc, st->exc, st->frameSize, st->lpcSize, st->mem_exc);
 
       /* Compute open-loop excitation gain */
       {
@@ -447,7 +446,7 @@ int nb_encode(void *state, void *vin, SpeexBits *bits)
             st->vbr_quality=0;
       }
 
-      st->relative_quality = vbr_analysis(st->vbr, in, st->frameSize, ol_pitch, GAIN_SCALING_1*ol_pitch_coef);
+      st->relative_quality = vbr_analysis(st->vbr, in, st->frameSize, GAIN_SCALING_1*ol_pitch_coef);
       /*if (delta_qual<0)*/
       /*  delta_qual*=.1*(3+st->vbr_quality);*/
       if (st->vbr_enabled) 
@@ -668,9 +667,9 @@ int nb_encode(void *state, void *vin, SpeexBits *bits)
       lsp_enforce_margin(interp_qlsp, st->lpcSize, LSP_MARGIN);
 
       /* Compute interpolated LPCs (quantized and unquantized) */
-      lsp_to_lpc(interp_lsp, interp_lpc, st->lpcSize,stack);
+      lsp_to_lpc(interp_lsp, interp_lpc, st->lpcSize);
 
-      lsp_to_lpc(interp_qlsp, interp_qlpc, st->lpcSize, stack);
+      lsp_to_lpc(interp_qlsp, interp_qlpc, st->lpcSize);
 
       /* Compute analysis filter gain at w=pi (for use in SB-CELP) */
       {
@@ -714,11 +713,11 @@ int nb_encode(void *state, void *vin, SpeexBits *bits)
          for (i=0;i<st->subframeSize;i++)
             real_exc[i] = sw[i] = in[i+((sub-1)*st->subframeSize)];
       }
-      fir_mem16(real_exc, interp_qlpc, real_exc, st->subframeSize, st->lpcSize, st->mem_exc2, stack);
+      fir_mem16(real_exc, interp_qlpc, real_exc, st->subframeSize, st->lpcSize, st->mem_exc2);
       
       if (st->complexity==0)
          response_bound >>= 1;
-      compute_impulse_response(interp_qlpc, bw_lpc1, bw_lpc2, syn_resp, response_bound, st->lpcSize, stack);
+      compute_impulse_response(interp_qlpc, bw_lpc1, bw_lpc2, syn_resp, response_bound, st->lpcSize);
       for (i=response_bound;i<st->subframeSize;i++)
          syn_resp[i]=VERY_SMALL;
       
@@ -734,16 +733,16 @@ int nb_encode(void *state, void *vin, SpeexBits *bits)
       filter_mem16(ringing, st->bw_lpc1, st->bw_lpc2, ringing, response_bound, st->lpcSize, mem, stack);
       SPEEX_MEMSET(&ringing[response_bound], 0, st->subframeSize-response_bound);
 #else
-      iir_mem16(ringing, interp_qlpc, ringing, st->subframeSize, st->lpcSize, mem, stack);
+      iir_mem16(ringing, interp_qlpc, ringing, st->subframeSize, st->lpcSize, mem);
       for (i=0;i<st->lpcSize;i++)
          mem[i]=SHL32(st->mem_sw[i],1);
-      filter_mem16(ringing, bw_lpc1, bw_lpc2, ringing, st->subframeSize, st->lpcSize, mem, stack);
+      filter_mem16(ringing, bw_lpc1, bw_lpc2, ringing, st->subframeSize, st->lpcSize, mem);
 #endif
       
       /* Compute weighted signal */
       for (i=0;i<st->lpcSize;i++)
          mem[i]=st->mem_sw[i];
-      filter_mem16(sw, bw_lpc1, bw_lpc2, sw, st->subframeSize, st->lpcSize, mem, stack);
+      filter_mem16(sw, bw_lpc1, bw_lpc2, sw, st->subframeSize, st->lpcSize, mem);
       
       if (st->complexity==0)
          for (i=0;i<st->lpcSize;i++)
@@ -787,10 +786,10 @@ int nb_encode(void *state, void *vin, SpeexBits *bits)
             pit_max=offset;
 
          /* Perform pitch search */
-         pitch = SUBMODE(ltp_quant)(target, sw, interp_qlpc, bw_lpc1, bw_lpc2,
-                                    exc32, SUBMODE(ltp_params), pit_min, pit_max, ol_pitch_coef,
-                                    st->lpcSize, st->subframeSize, bits, stack, 
-                                    exc, syn_resp, st->complexity, 0, st->plc_tuning, &st->cumul_gain);
+         pitch = SUBMODE(ltp_quant)(target, interp_qlpc, bw_lpc1, bw_lpc2,
+                                    exc32, pit_min, ol_pitch_coef,
+                                    st->lpcSize, st->subframeSize,
+                                    exc);
 
          st->pitch[sub]=pitch;
       }
@@ -842,9 +841,7 @@ int nb_encode(void *state, void *vin, SpeexBits *bits)
       speex_assert (SUBMODE(innovation_quant));
       {
          /* Codebook search */
-         SUBMODE(innovation_quant)(target, interp_qlpc, bw_lpc1, bw_lpc2, 
-                  SUBMODE(innovation_params), st->lpcSize, st->subframeSize, 
-                  innov, syn_resp, bits, stack, st->complexity, SUBMODE(double_codebook));
+         SUBMODE(innovation_quant)(target, interp_qlpc, bw_lpc1, bw_lpc2, SUBMODE(innovation_params), st->lpcSize, st->subframeSize, innov, syn_resp, bits, st->complexity, SUBMODE(double_codebook));
          
          /* De-normalize innovation and update excitation */
          signal_mul(innov, innov, ener, st->subframeSize);
@@ -860,9 +857,7 @@ int nb_encode(void *state, void *vin, SpeexBits *bits)
             SPEEX_MEMSET(innov2, 0, st->subframeSize);
             for (i=0;i<st->subframeSize;i++)
                target[i]=MULT16_16_P13(QCONST16(2.2f,13), target[i]);
-            SUBMODE(innovation_quant)(target, interp_qlpc, bw_lpc1, bw_lpc2, 
-                                      SUBMODE(innovation_params), st->lpcSize, st->subframeSize, 
-                                      innov2, syn_resp, bits, stack, st->complexity, 0);
+            SUBMODE(innovation_quant)(target, interp_qlpc, bw_lpc1, bw_lpc2, SUBMODE(innovation_params), st->lpcSize, st->subframeSize, innov2, syn_resp, bits, st->complexity, 0);
             signal_mul(innov2, innov2, MULT16_32_Q15(QCONST16(0.454545f,15),ener), st->subframeSize);
             for (i=0;i<st->subframeSize;i++)
                innov[i] = ADD32(innov[i],innov2[i]);
@@ -877,11 +872,11 @@ int nb_encode(void *state, void *vin, SpeexBits *bits)
       }
 
       /* Final signal synthesis from excitation */
-      iir_mem16(exc, interp_qlpc, sw, st->subframeSize, st->lpcSize, st->mem_sp, stack);
+      iir_mem16(exc, interp_qlpc, sw, st->subframeSize, st->lpcSize, st->mem_sp);
 
       /* Compute weighted signal again, from synthesized speech (not sure it's the right thing) */
       if (st->complexity!=0)
-         filter_mem16(sw, bw_lpc1, bw_lpc2, sw, st->subframeSize, st->lpcSize, st->mem_sw, stack);
+         filter_mem16(sw, bw_lpc1, bw_lpc2, sw, st->subframeSize, st->lpcSize, st->mem_sw);
       
    }
 
@@ -1017,8 +1012,7 @@ const spx_word16_t attenuation[10] = {1., 0.961, 0.852, 0.698, 0.527, 0.368, 0.2
 
 #endif
 
-static void nb_decode_lost(DecState *st, spx_word16_t *out, char *stack)
-{
+static void nb_decode_lost(DecState *st, spx_word16_t *out) {
    int i;
    int pitch_val;
    spx_word16_t pitch_gain;
@@ -1066,8 +1060,7 @@ static void nb_decode_lost(DecState *st, spx_word16_t *out, char *stack)
    }
 
    bw_lpc(QCONST16(.98,15), st->interp_qlpc, st->interp_qlpc, st->lpcSize);
-   iir_mem16(&st->exc[-st->subframeSize], st->interp_qlpc, out, st->frameSize,
-             st->lpcSize, st->mem_sp, stack);
+   iir_mem16(&st->exc[-st->subframeSize], st->interp_qlpc, out, st->frameSize,st->lpcSize, st->mem_sp);
    highpass(out, out, st->frameSize, HIGHPASS_NARROWBAND|HIGHPASS_OUTPUT, st->mem_hp);
    
    st->first = 0;
@@ -1113,9 +1106,8 @@ int nb_decode(void *state, SpeexBits *bits, void *vout)
    } else 
    {
       /* If bits is NULL, consider the packet to be lost (what could we do anyway) */
-      if (!bits)
-      {
-         nb_decode_lost(st, out, stack);
+      if (!bits) {
+         nb_decode_lost(st, out);
          return 0;
       }
 
@@ -1175,12 +1167,12 @@ int nb_decode(void *state, SpeexBits *bits, void *vout)
             return -1;
          } else if (m==14) /* Speex in-band request */
          {
-            int ret = speex_inband_handler(bits, st->speex_callbacks, state);
+            int ret = speex_inband_handler(bits, st->speex_callbacks);
             if (ret)
                return ret;
          } else if (m==13) /* User in-band request */
          {
-            int ret = st->user_callback.func(bits, state, st->user_callback.data);
+            int ret = st->user_callback.func(bits);
             if (ret)
                return ret;
          } else if (m>8) /* Invalid mode */
@@ -1218,7 +1210,7 @@ int nb_decode(void *state, SpeexBits *bits, void *vout)
       st->first=1;
 
       /* Final signal synthesis from excitation */
-      iir_mem16(st->exc, lpc, out, st->frameSize, st->lpcSize, st->mem_sp, stack);
+      iir_mem16(st->exc, lpc, out, st->frameSize, st->lpcSize, st->mem_sp);
 
       st->count_lost=0;
       return 0;
@@ -1397,7 +1389,7 @@ int nb_decode(void *state, SpeexBits *bits, void *vout)
          speex_assert (SUBMODE(innovation_unquant));
          {
             /*Fixed codebook contribution*/
-            SUBMODE(innovation_unquant)(innov, SUBMODE(innovation_params), st->subframeSize, bits, stack, &st->seed);
+            SUBMODE(innovation_unquant)(innov, SUBMODE(innovation_params), bits);
             /* De-normalize innovation and update excitation */
 
             signal_mul(innov, innov, ener, st->subframeSize);
@@ -1409,7 +1401,7 @@ int nb_decode(void *state, SpeexBits *bits, void *vout)
                VARDECL(spx_sig_t *innov2);
                ALLOC(innov2, st->subframeSize, spx_sig_t);
                SPEEX_MEMSET(innov2, 0, st->subframeSize);
-               SUBMODE(innovation_unquant)(innov2, SUBMODE(innovation_params), st->subframeSize, bits, stack, &st->seed);
+               SUBMODE(innovation_unquant)(innov2, SUBMODE(innovation_params), bits);
                signal_mul(innov2, innov2, MULT16_32_Q15(QCONST16(0.454545f,15),ener), st->subframeSize);
                for (i=0;i<st->subframeSize;i++)
                   innov[i] = ADD32(innov[i], innov2[i]);
@@ -1465,10 +1457,9 @@ int nb_decode(void *state, SpeexBits *bits, void *vout)
    
    ALLOC(interp_qlsp, st->lpcSize, spx_lsp_t);
 
-   if (st->lpc_enh_enabled && SUBMODE(comb_gain)>0 && !st->count_lost)
-   {
-      multicomb(st->exc-st->subframeSize, out, st->interp_qlpc, st->lpcSize, 2*st->subframeSize, best_pitch, 40, SUBMODE(comb_gain), stack);
-      multicomb(st->exc+st->subframeSize, out+2*st->subframeSize, st->interp_qlpc, st->lpcSize, 2*st->subframeSize, best_pitch, 40, SUBMODE(comb_gain), stack);
+   if (st->lpc_enh_enabled && SUBMODE(comb_gain)>0 && !st->count_lost) { 
+      multicomb(st->exc-st->subframeSize, out, 2*st->subframeSize, best_pitch, 40, SUBMODE(comb_gain));
+      multicomb(st->exc+st->subframeSize, out+2*st->subframeSize, 2*st->subframeSize, best_pitch, 40, SUBMODE(comb_gain));
    } else {
       SPEEX_COPY(out, &st->exc[-st->subframeSize], st->frameSize);
    }
@@ -1517,7 +1508,7 @@ int nb_decode(void *state, SpeexBits *bits, void *vout)
       lsp_enforce_margin(interp_qlsp, st->lpcSize, LSP_MARGIN);
 
       /* Compute interpolated LPCs (unquantized) */
-      lsp_to_lpc(interp_qlsp, ak, st->lpcSize, stack);
+      lsp_to_lpc(interp_qlsp, ak, st->lpcSize);
 
       /* Compute analysis filter at w=pi */
       {
@@ -1530,8 +1521,7 @@ int nb_decode(void *state, SpeexBits *bits, void *vout)
          st->pi_gain[sub] = pi_g;
       }
       
-      iir_mem16(sp, st->interp_qlpc, sp, st->subframeSize, st->lpcSize, 
-                st->mem_sp, stack);
+      iir_mem16(sp, st->interp_qlpc, sp, st->subframeSize, st->lpcSize, st->mem_sp);
       
       for (i=0;i<st->lpcSize;i++)
          st->interp_qlpc[i] = ak[i];

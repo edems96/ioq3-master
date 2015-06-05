@@ -3488,7 +3488,8 @@ void Field_CompleteCommand( char *cmd,
 			baseCmd++;
 #endif
 
-		if( ( p = Field_FindFirstSeparator( cmd ) ) )
+		p = Field_FindFirstSeparator( cmd );
+		if( p )
 			Field_CompleteCommand( p + 1, qtrue, qtrue ); // Compound command
 		else
 			Cmd_CompleteArgument( baseCmd, cmd, completionArgument ); 

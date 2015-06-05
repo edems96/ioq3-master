@@ -51,8 +51,7 @@
        
 #define toMEL(n)    (2595.f*log10(1.f+(n)/700.f))
 
-FilterBank *filterbank_new(int banks, spx_word32_t sampling, int len, int type)
-{
+FilterBank *filterbank_new(int banks, spx_word32_t sampling, int len) {
    FilterBank *bank;
    spx_word32_t df;
    spx_word32_t max_mel, mel_interval;

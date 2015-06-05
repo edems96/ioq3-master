@@ -119,7 +119,7 @@ static const spx_float_t VAR_BACKTRACK = 4.f;
 
 #define PLAYBACK_DELAY 2
 
-void speex_echo_get_residual(SpeexEchoState *st, spx_word32_t *Yout, int len);
+void speex_echo_get_residual(SpeexEchoState *st, spx_word32_t *Yout);
 
 
 /** Speex echo cancellation state. */
@@ -637,8 +637,7 @@ void speex_echo_playback(SpeexEchoState *st, const spx_int16_t *play)
 }
 
 /** Performs echo cancellation on a frame (deprecated, last arg now ignored) */
-void speex_echo_cancel(SpeexEchoState *st, const spx_int16_t *in, const spx_int16_t *far_end, spx_int16_t *out, spx_int32_t *Yout)
-{
+void speex_echo_cancel(SpeexEchoState *st, const spx_int16_t *in, const spx_int16_t *far_end, spx_int16_t *out) {
    speex_echo_cancellation(st, in, far_end, out);
 }
 
@@ -1108,7 +1107,7 @@ void speex_echo_cancellation(SpeexEchoState *st, const spx_int16_t *in, const sp
 }
 
 /* Compute spectrum of estimated echo for use in an echo post-filter */
-void speex_echo_get_residual(SpeexEchoState *st, spx_word32_t *residual_echo, int len)
+void speex_echo_get_residual(SpeexEchoState *st, spx_word32_t *residual_echo)
 {
    int i;
    spx_word16_t leak2;

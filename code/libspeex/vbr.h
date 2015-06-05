@@ -63,8 +63,8 @@ typedef struct VBRState {
 
 void vbr_init(VBRState *vbr);
 
-float vbr_analysis(VBRState *vbr, spx_word16_t *sig, int len, int pitch, float pitch_coef);
+float vbr_analysis(VBRState *vbr, spx_word16_t *sig, int len, float pitch_coef);
 
-void vbr_destroy(VBRState *vbr);
+void vbr_destroy();
 
 #endif
